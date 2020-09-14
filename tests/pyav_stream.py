@@ -74,6 +74,21 @@ if __name__ == "__main__":
 
     for frame in container.decode(stream):
         frame_counter += 1
+        print(data_pts)
+        print(frame.time, frame.pts, frame.time_base)
+        if data_gp['ts'] > 0 and data_pts['ts'] > 0:
+            offset = data_gp['ts'] / 1000.0 - data_pts['ts'] / 1000.0  # in milliseconds
+            print(data_pts, data_gp)
+
+            print('Frame_pts = %f' % float(frame.pts))
+            print('Frame_time = %f' % float(frame.time))
+            print('Gaze ts = %f' % float(data_gp['ts']))
+            print('Data_pts = %f' % float(data_pts['pts']))
+            print('Offset = %f' % float(offset))
+
+            # Overlay gazepoint
+            height, width = frame_cv.shape[:2]
+            cv2.circle(frame_cv, (int(data_gp['gp'][0] * width), int(data_gp['gp'][1] * height)), 20, (0, 0, 255), 6)
 
         data_gp = tobiiglasses.get_data()['gp']
         data_gp3 = tobiiglasses.get_data()['gp3']
@@ -102,8 +117,6 @@ if __name__ == "__main__":
             # Overlay gazepoint
             height, width = frame_cv.shape[:2]
             cv2.circle(frame_cv, (int(data_gp['gp'][0] * width), int(data_gp['gp'][1] * height)), 20, (0, 0, 255), 6)
-
-
 
 
         # Display Stream

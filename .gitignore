@@ -58,3 +58,4 @@ ENV/
 # mypy
 .mypy_cache/
 ./aruco_boards
+./build

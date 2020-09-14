@@ -49,10 +49,11 @@ TOBII_DATETIME_FORMAT_HUMREAD = '%d/%m/%Y %H:%M:%S'
 
 class TobiiGlassesController():
 
-    def __init__(self, address = None, video_scene = False, timeout = None):
+    def __init__(self, address = None, video_scene = True, grab_data=False, timeout = None):
         self.timeout = 1
         self.streaming = False
         self.video_scene = video_scene
+        self.grab_data = grab_data
         self.udpport = 49152
         self.address = address
         self.iface_name = None
@@ -112,7 +113,7 @@ class TobiiGlassesController():
         return res
 
     def __disconnect__(self):
-        logging.debug("Disconnecting to the Tobii Pro Glasses 2")
+        logging.debug("Disconnecting from Tobii Pro Glasses 2")
         self.data_socket.close()
         if self.video_scene:
             self.video_socket.close()
@@ -322,14 +323,17 @@ class TobiiGlassesController():
     def __start_streaming__(self):
         self.streaming = True
         self.td = threading.Timer(0, self.__send_keepalive_msg__, [self.data_socket, self.KA_DATA_MSG])
-        self.tg = threading.Timer(0, self.__grab_data__, [self.data_socket])
+        self.td.start()
+        logging.debug("Initiated keepalive")
+
+        if self.grab_data:
+            self.tg = threading.Timer(0, self.__grab_data__, [self.data_socket])
+            self.tg.start()
+            logging.debug("Data streaming started...")
         if self.video_scene:
             self.tv = threading.Timer(0, self.__send_keepalive_msg__, [self.video_socket, self.KA_VIDEO_MSG])
             self.tv.start()
             logging.debug("Video streaming started...")
-        self.td.start()
-        self.tg.start()
-        logging.debug("Data streaming started...")
 
     def close(self):
         if self.address is not None:
