@@ -119,18 +119,11 @@ if __name__ == "__main__":
             cv2.circle(frame_cv, (int(data_gp['gp'][0] * width), int(data_gp['gp'][1] * height)), 20, (0, 0, 255), 6)
 
 
-        # Display Stream
-        # cv2.imshow("Livestream", frame_cv)
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
+        # Display stream
+        cv2.imshow("Livestream", frame_cv)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-    # TODO add:
-    ## 1. sync in support
-    ## 2. all gaze points - gp, gp3
-    ## 3. ts, pts, ets, vts supports
-    #1 test streaming
-    #2 setup sockets/design ROS interface w ZMQ?
-    #3 design ROS wrapper - which things are important/which topics to have etc
 
     cv2.destroyAllWindows()
     tobiiglasses.stop_streaming()

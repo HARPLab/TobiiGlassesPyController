@@ -31,6 +31,7 @@ def calibrate(tobiiglasses):
 
     return res
 
+
 if __name__ == "__main__":
     port = 5555
     sender = imagezmq.ImageSender("tcp://*:{}".format(port), REQ_REP=False)
@@ -40,9 +41,9 @@ if __name__ == "__main__":
     ipv4_address = tobiiglasses.get_address()
 
     # # calibrate the glasses
-    if calibrate(tobiiglasses) is False:
-        print("Calibration failed!")
-        exit(1)
+    # if not calibrate(tobiiglasses):
+    #     print("Calibration failed!")
+    #     exit(1)
 
     # start video stream
     tobiiglasses.start_streaming()
@@ -84,14 +85,6 @@ if __name__ == "__main__":
         # cv2.imshow("Livestream", frame_cv)
         # if cv2.waitKey(1) & 0xFF == ord('q'):
         #     break
-
-    # TODO add:
-    ## 1. sync in support
-    ## 2. all gaze points - gp, gp3
-    ## 3. ts, pts, ets, vts support
-    # 1 test streaming
-    # 2 setup sockets/design ROS interface w ZMQ?
-    # 3 design ROS wrapper - which things are important/which topics to have etc
 
     tobiiglasses.stop_streaming()
     tobiiglasses.close()
