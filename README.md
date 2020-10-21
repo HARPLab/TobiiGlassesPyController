@@ -12,6 +12,7 @@ One diffculty is that to get the `vts` timestamps, we must use PyAV (only compat
 ### Future TODOs
 - [ ] C++ publisher for video
 - [ ] in-proc communication via subprocess for imgzmq communication
+- [ ] change imagezmq transport to `ipc` http://api.zeromq.org/2-1:zmq-ipc
 
 
 # Citation
