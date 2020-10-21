@@ -1,16 +1,17 @@
 # TobiiGlassesPyController: A Python controller for Tobii Pro Glasses 2
 
-[![Build Status](https://travis-ci.org/ddetommaso/TobiiGlassesPyController.svg?branch=master)](https://travis-ci.org/ddetommaso/TobiiGlassesPyController)
-
-
 The TobiiGlassesPyController is an open-source controller for accessing eye-tracking data and for managing recordings,
 participants and calibrations using the mobile Tobii Pro Glasses 2 eye-tracker.
 The controller is based on the [Tobii Pro Glasses 2 API](https://www.tobiipro.com/product-listing/tobii-pro-glasses-2-sdk/).
 
+### ROS data collection branch
+This branch is for using the Tobii eye tracker in online streaming mode with ROS. This branch contains publishers for the ego-centric video feed and associated `vts` timestamps for video frames.
 
-# Getting started
+One diffculty is that to get the `vts` timestamps, we must use PyAV (only compatible with Python3) while a lot of lab ROS infrastructure is based on ROS kinetic (doesn't support Python3). Currently we use `imagezmq` for sending frames and timestamps from PyAV reader (Python3) to a [publisher](https://github.com/ajdroid/tobii_ros/blob/master/gaze_api/scripts/vidPub.py) (Python2)
 
-Please visit the [wiki](https://github.com/ddetommaso/TobiiGlassesPyController/wiki)
+### Future TODOs
+- [ ] C++ publisher for video
+- [ ] in-proc communication via subprocess for imgzmq communication
 
 
 # Citation
