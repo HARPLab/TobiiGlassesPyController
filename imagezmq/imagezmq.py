@@ -45,7 +45,7 @@ class ImageSender():
         a matching SUB time_socket on the ImageHub().
         """
 
-        if REQ_REP == True:
+        if REQ_REP:
              # REQ/REP mode, this is a blocking scenario
              self.init_reqrep(connect_to)
         else:

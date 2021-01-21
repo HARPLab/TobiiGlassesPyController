@@ -34,7 +34,10 @@ def calibrate(tobiiglasses):
 
 if __name__ == "__main__":
     port = 5555
-    sender = imagezmq.ImageSender("tcp://*:{}".format(port), REQ_REP=False)
+
+    # make this optional for tcp vs ipc operations
+    # sender = imagezmq.ImageSender("tcp://*:{}".format(port), REQ_REP=False)
+    sender = imagezmq.ImageSender("ipc:///tmp/tobiiVid", REQ_REP=False)
 
     #  connect to Tobii
     tobiiglasses = TobiiGlassesController(video_scene=True, grab_data=False)
@@ -49,6 +52,11 @@ if __name__ == "__main__":
     tobiiglasses.start_streaming()
 
     rtsp_url = "rtsp://[%s]:8554/live/scene" % ipv4_address
+    print(rtsp_url)
+
+    import time
+    # time.sleep(1000)
+
     container = av.open(rtsp_url, options={'rtsp_transport': 'tcp'})
     stream = container.streams.video[0]
     counter = 0
@@ -73,10 +81,10 @@ if __name__ == "__main__":
         #     cv2.circle(frame_cv, (int(data_gp['gp'][0] * width), int(data_gp['gp'][1] * height)), 20, (0, 0, 255), 6)
 
         # send image and frame time to the sub
-        ret_code, jpg_buffer = cv2.imencode(
-            ".jpg", frame_cv, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+        # ret_code, jpg_buffer = cv2.imencode(
+        #     ".jpg", frame_cv, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
         msg = "%d %f" % (counter, frame.time)
-        sender.send_jpg(msg, jpg_buffer)
+        sender.send_jpg(msg, frame_cv)
         print("Sent frame {}".format(counter))
         print(msg)
         counter += 1

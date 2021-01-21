@@ -17,6 +17,11 @@ class VideoStreamSubscriber:
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
+        if port == 0:  # ipc operation rather than tcp
+            self.receiver_address = "ipc://{}".format(self.hostname)
+        else:
+            self.receiver_address = "tcp://{}:{}".format(self.hostname, self.port)
+
         self._stop = False
         self._data_ready = threading.Event()
         self._thread = threading.Thread(target=self._run, args=())
@@ -27,12 +32,12 @@ class VideoStreamSubscriber:
         flag = self._data_ready.wait(timeout=timeout)
         if not flag:
             raise TimeoutError(
-                "Timeout while reading from subscriber tcp://{}:{}".format(self.hostname, self.port))
+                "Timeout while reading from subscriber {}".format(self.receiver_address))
         self._data_ready.clear()
         return self._data
 
     def _run(self):
-        receiver = imagezmq.ImageHub("tcp://{}:{}".format(self.hostname, self.port), REQ_REP=False)
+        receiver = imagezmq.ImageHub(self.receiver_address, REQ_REP=False)
         while not self._stop:
             self._data = receiver.recv_jpg()
             # self._data = receiver.recv_image()
@@ -54,6 +59,7 @@ if __name__ == "__main__":
     hostname = "127.0.0.1"  # Use to receive from localhost
     # hostname = "192.168.86.38"  # Use to receive from other computer
     port = 5555
+    hostname = "/tmp/foo"; port=0  # port 0 for ipc
     receiver = VideoStreamSubscriber(hostname, port)
 
 
@@ -87,6 +93,11 @@ if __name__ == "__main__":
 
             # cv2.imshow("Pub Sub Receive", image)
             # cv2.waitKey(1)
+
+            cv2.imshow("Livestream", image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
             sent_counter_string, sent_time_string = sent_msg_string.split()
             sent_counter = int(sent_counter_string)
             sent_time = float(sent_time_string)

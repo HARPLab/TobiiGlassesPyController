@@ -14,6 +14,7 @@ if __name__ == "__main__":
     # Publish on port
     port = 5555
     sender = imagezmq.ImageSender("tcp://*:{}".format(port), REQ_REP=False)
+    sender = imagezmq.ImageSender("ipc:///tmp/foo", REQ_REP=False)
 
     # Open input stream; comment out one of these capture = VideoStream() lines!
     # Webcam source for broadcast images
@@ -31,6 +32,7 @@ if __name__ == "__main__":
     # Keeping it anyway in case you wanna send a meaningful tag or something
     #    (or have a many to many setup)
     # rpi_name = socket.gethostname()
+
     frame = cv2.imread("dash_aruco_1.png")
     try:
         counter = 0
